@@ -78,11 +78,10 @@ interface ICoin {
   is_active: boolean;
   type: string;
 }
-interface ICoinsProps {}
 
 function Coins() {
   const setDarkAtom = useSetRecoilState(isDarkAtom);
-  const toggleDarkAtom = () => setDarkAtom((prev) => !prev);
+  //데이터를 캐시에 저장해서 똑같은 페이지를 다시 들어가면 api를 호출하는 일이 없이 기존의 데이터를 화면에 그대로 뿌려준다.
   const { isLoading, data } = useQuery<ICoin[]>(["allCoins"], fetchCoins);
   return (
     <Container>

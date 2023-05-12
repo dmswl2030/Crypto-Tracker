@@ -76,12 +76,7 @@ function Price({ tickersData }: PriceProps) {
     const formattedPercentage = `${Math.abs(percentage).toFixed(2)}%`;
     const color = percentage < 0 ? "rgb(20, 215, 20)" : "rgb(240, 66, 66)";
     const sign = percentage < 0 ? "-" : "+";
-    return (
-      <p style={{ color }}>
-        {sign}
-        {formattedPercentage}
-      </p>
-    );
+    return <p style={{ color }}>{`${sign} ${formattedPercentage}`}</p>;
   };
 
   return (

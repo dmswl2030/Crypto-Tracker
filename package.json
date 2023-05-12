@@ -2,7 +2,7 @@
   "name": "crypto-tracker",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/dmswl2030/Crypto-Tracker",
+  "homepage": "https://dmswl2030.github.io/Crypto-Tracker/",
   "dependencies": {
     "@tanstack/react-query": "^4.29.5",
     "@testing-library/jest-dom": "^5.16.5",
