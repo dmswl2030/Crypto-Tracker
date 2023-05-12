@@ -7,11 +7,35 @@ import Price from "./Price";
 import { useQuery } from "react-query";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
 
+const Header = styled.header`
+  position: relative;
+  width: 100%;
+  height: 15vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const Title = styled.h1`
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
   font-size: 48px;
   color: ${(props) => props.theme.accentColor};
 `;
-
+const BackBtn = styled.button`
+  position: absolute;
+  padding: 10px 20px;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid ${(props) => props.theme.accentColor};
+  border-radius: 30px;
+  background-color: transparent;
+  margin-right: auto;
+  font-size: 15px;
+  color: ${(props) => props.theme.accentColor};
+`;
 const Loader = styled.span`
   text-align: center;
   display: block;
@@ -23,17 +47,11 @@ const Container = styled.div`
   margin: 0 auto;
 `;
 
-const Header = styled.header`
-  height: 15vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 const Overview = styled.div`
   display: flex;
   justify-content: space-between;
-  background-color: rgba(0, 0, 0, 0.5);
+  color: ${(props) => props.theme.textColor};
+  background-color: ${(props) => props.theme.bgColor};
   padding: 10px 20px;
   border-radius: 10px;
 `;
@@ -62,12 +80,13 @@ const Tabs = styled.div`
 const Tab = styled.span<{ isActive: boolean }>`
   text-align: center;
   text-transform: uppercase;
-  font-size: 12px;
-  font-weight: 400;
-  background-color: rgba(0, 0, 0, 0.5);
+  font-size: 16px;
+  font-weight: 700;
+  color: ${(props) => (props.isActive ? "#fff" : props.theme.textColor)};
+  background-color: ${(props) =>
+    props.isActive ? props.theme.accentColor : props.theme.bgColor};
+  border: 1px solid ${(props) => props.theme.accentColor};
   border-radius: 10px;
-  color: ${(props) =>
-    props.isActive ? props.theme.accentColor : props.theme.textColor};
   a {
     padding: 7px 0px;
     display: block;
@@ -100,8 +119,7 @@ interface InfoData {
   first_data_at: string;
   last_data_at: string;
 }
-
-interface PriceData {
+export interface PriceData {
   id: string;
   name: string;
   symbol: string;
@@ -134,10 +152,7 @@ interface PriceData {
     };
   };
 }
-
-interface ICoinProps {}
-
-function Coin({}: ICoinProps) {
+function Coin() {
   const { coinId } = useParams<keyof RouteParams>();
   const { state } = useLocation() as RouteState;
   const priceMatch = useMatch("/:coinId/price");
@@ -147,6 +162,7 @@ function Coin({}: ICoinProps) {
     ["info", coinId],
     () => fetchCoinInfo(coinId!)
   );
+
   const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
     ["tickers", coinId],
     () => fetchCoinTickers(coinId!),
@@ -154,23 +170,9 @@ function Coin({}: ICoinProps) {
       refetchInterval: 5000,
     }
   );
+  console.log(tickersData);
   const loading = infoLoading || tickersLoading;
-  /* const [loading, setLoading] = useState(true);
-  const [info, setInfo] = useState<InfoData>();
-  const [priceInfo, setPriceInfo] = useState<PriceData>();
-  useEffect(() => {
-    (async () => {
-      const infoData = await (
-        await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-      ).json();
-      const priceData = await (
-        await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-      ).json();
-      setInfo(infoData);
-      setPriceInfo(priceData);
-      setLoading(false);
-    })();
-  }, [coinId]); */
+
   return (
     <Container>
       <Helmet>
@@ -179,6 +181,9 @@ function Coin({}: ICoinProps) {
         </title>
       </Helmet>
       <Header>
+        <BackBtn>
+          <Link to="/">&lt; Back</Link>
+        </BackBtn>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </Title>
@@ -222,7 +227,10 @@ function Coin({}: ICoinProps) {
           </Tabs>
           <Routes>
             <Route path="chart" element={<Chart coinId={coinId!} />} />
-            <Route path="price" element={<Price />} />
+            <Route
+              path="price"
+              element={<Price tickersData={tickersData!} />}
+            />
           </Routes>
         </>
       )}

@@ -13,6 +13,7 @@ const Container = styled.div`
 `;
 
 const Header = styled.header`
+  position: relative;
   height: 15vh;
   display: flex;
   justify-content: center;
@@ -41,6 +42,19 @@ const Coin = styled.li`
 `;
 const Title = styled.h1`
   font-size: 48px;
+  color: ${(props) => props.theme.accentColor};
+`;
+const ToggleBtn = styled.button`
+  position: absolute;
+  padding: 10px 20px;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid ${(props) => props.theme.accentColor};
+  border-radius: 30px;
+  background-color: transparent;
+  margin-right: auto;
+  font-size: 15px;
   color: ${(props) => props.theme.accentColor};
 `;
 
@@ -77,9 +91,9 @@ function Coins() {
       </Helmet>
       <Header>
         <Title>Coins</Title>
-        <button onClick={() => setDarkAtom((prev) => !prev)}>
+        <ToggleBtn onClick={() => setDarkAtom((prev) => !prev)}>
           Toggle Mode
-        </button>
+        </ToggleBtn>
       </Header>
       {isLoading ? (
         <Loader>Loading...</Loader>

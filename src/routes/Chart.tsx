@@ -28,23 +28,25 @@ function Chart({ coinId }: ChartProps) {
       refetchInterval: 10000,
     }
   );
+  const chartTheme = isDark ? "dark" : "light"; // isDarkAtom을 통해 얻은 값에 따라 차트 테마 설정
+
   return (
     <div>
       {isLoading ? (
         "Loading chart..."
       ) : (
         <ApexCharts
-          type="line"
+          type="candlestick"
           series={[
             {
-              name: "date",
-              data: data?.map((price) => Number(price.close)) ?? [],
+              data:
+                data?.map((price) => ({
+                  x: new Date(price.time_close),
+                  y: [price.open, price.high, price.low, price.close],
+                })) ?? [],
             },
           ]}
           options={{
-            theme: {
-              mode: isDark ? "dark" : "light",
-            },
             chart: {
               height: 300,
               width: 500,
@@ -52,35 +54,37 @@ function Chart({ coinId }: ChartProps) {
                 show: false,
               },
               background: "transparent",
+              foreColor: isDark ? "#fff" : "#373d3f", // isDarkAtom을 통해 얻은 값에 따라 차트 텍스트 색상 설정
             },
             grid: {
               show: false,
             },
-            stroke: {
-              curve: "smooth",
-              width: 4,
+            xaxis: {
+              type: "datetime",
             },
             yaxis: {
-              show: false,
-            },
-            xaxis: {
-              axisBorder: { show: false },
-              axisTicks: { show: false },
-              labels: {
-                show: false,
+              tooltip: {
+                enabled: true,
               },
-              type: "datetime",
-              categories: data?.map((price) => price.time_close),
             },
-            fill: {
-              type: "gradient",
-              gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
+            plotOptions: {
+              candlestick: {
+                colors: {
+                  upward: "#0be881",
+                  downward: "#ff3d71",
+                },
+              },
             },
-            colors: ["#0fbcf9"],
             tooltip: {
+              x: {
+                format: "dd MMM yyyy",
+              },
               y: {
                 formatter: (value) => `$${value.toFixed(2)}`,
               },
+            },
+            theme: {
+              mode: chartTheme, // isDarkAtom을 통해 얻은 값에 따라 차트 테마 설정
             },
           }}
         />
